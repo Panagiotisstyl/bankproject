@@ -24,7 +24,7 @@ public class UsersService {
         return usersRepository.save(user);
     }
 
-    public boolean delete(int id){
+    public boolean deleteById(int id){
         if(!usersRepository.existsById(id))
             return false;
         usersRepository.deleteById(id);
