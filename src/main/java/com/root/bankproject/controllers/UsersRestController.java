@@ -4,9 +4,8 @@ package com.root.bankproject.controllers;
 import com.root.bankproject.converters.UsersConverter;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
-import com.root.bankproject.encryption.BcryptHashing;
-import com.root.bankproject.entities.Users;
 import com.root.bankproject.services.UsersService;
+import com.root.bankproject.validations.UserValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +18,7 @@ public class UsersRestController {
 
 
     private final UsersService usersService;
+    private final UserValidation userValidation;
 
     @GetMapping("/users")
     public List<UserResponseDto> findAll(){
@@ -37,11 +37,7 @@ public class UsersRestController {
 
     @PostMapping("/users")
     public String userLogin(@RequestBody UsersDto usersDto){
-        Users user=usersService.findByEmail(usersDto.getEmail());
-        if(BcryptHashing.verifyPassword(usersDto.getPassword(),user.getPassword())){
-            return ""+user.getId();
-        }
-        return "Wrong Password";
+        return userValidation.validateUser(usersDto);
     }
 
 }
