@@ -12,7 +12,6 @@ import com.root.bankproject.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,15 +29,16 @@ public class AccountValidation {
             if(account.getTypeAccount()== TypeAccount.SINGLE && !account.getUsers().isEmpty()){
                 throw new RuntimeException("Cannot add user, account type is single");
             }
-            List<Users> newLIst=new ArrayList<>();
 
-            newLIst.add(usersService.findById(userId));
+            List<Users> newList= account.getUsers();
+
+            newList.add(usersService.findById(userId));
 
             return  AccountsDto.builder()
                     .typeAccount(account.getTypeAccount())
                     .description(account.getDescription())
                     .balance(account.getBalance())
-                    .ids(AccountsConverter.getIds(newLIst))
+                    .ids(AccountsConverter.getIds(newList))
                     .build();
 
     }

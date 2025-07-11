@@ -4,18 +4,20 @@ import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.encryption.BcryptHashing;
 import com.root.bankproject.entities.Users;
+import com.root.bankproject.services.UsersService;
 import io.micrometer.common.lang.Nullable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-@NoArgsConstructor(access= AccessLevel.PRIVATE)
+@Component
+@RequiredArgsConstructor
 public class UsersConverter {
 
 
+    private final UsersService usersService;
 
     public static Users toEntity(UsersDto usersDto){
         return toEntity(usersDto,null);
@@ -47,4 +49,18 @@ public class UsersConverter {
     public static List<UserResponseDto> toDtoList(List<Users> users){
         return users.stream().map(UsersConverter::toResponseDto).collect(Collectors.toList());
     }
+
+    public List<UserResponseDto> findAllConvert(){
+        return toDtoList(usersService.findALl());
+    }
+
+    public UserResponseDto findByIdConvert(int userId){
+        return toResponseDto(usersService.findById(userId));
+    }
+
+    public UserResponseDto registerUserConvert(UsersDto usersDto) {
+        return toResponseDto(usersService.save(toEntity(usersDto)));
+    }
+
+
 }
