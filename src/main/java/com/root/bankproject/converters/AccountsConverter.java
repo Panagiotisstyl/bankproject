@@ -4,7 +4,9 @@ import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.entities.Accounts;
 import com.root.bankproject.entities.Users;
+import com.root.bankproject.services.AccountsService;
 import com.root.bankproject.services.UsersService;
+import com.root.bankproject.validations.AccountValidation;
 import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class AccountsConverter {
 
     private final UsersService usersService;
+    private final AccountsService accountsService;
+    private final AccountValidation accountValidation;
 
     public Accounts toEntity(AccountsDto accountsDto){
         return toEntity(accountsDto,null);
@@ -67,5 +71,23 @@ public class AccountsConverter {
 
     public List<AccountResponseDto> toDtoList(List<Accounts> accounts){
         return accounts.stream().map(this::toResponseDto).collect(Collectors.toList());
+    }
+
+    public List<AccountResponseDto> findALlConvert(){
+        return toDtoList(accountsService.findAll());
+    }
+
+    public AccountResponseDto findByIdConvert(int accId){
+        return toResponseDto(accountsService.findById(accId));
+    }
+
+    public AccountResponseDto registerAccountConvert(AccountsDto accountsDto){
+        return toResponseDto(accountsService.save(toEntity(accountsDto)));
+    }
+
+    public void addUserConvert(AccountResponseDto accountResponseDto, int userId){
+        AccountsDto dto=accountValidation.validateUsersAccount(accountResponseDto,userId);
+        Accounts accToUpdate=toEntity(dto, accountsService.findById(accountResponseDto.getId()));
+        accountsService.save(accToUpdate);
     }
 }
