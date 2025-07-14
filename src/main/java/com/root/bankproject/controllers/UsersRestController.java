@@ -34,7 +34,7 @@ public class UsersRestController {
         return usersConverter.registerUserConvert(usersDto);
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/login")
     public String userLogin(@RequestBody UsersDto usersDto){
         return userValidation.validateUser(usersDto);
     }

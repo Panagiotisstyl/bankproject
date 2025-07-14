@@ -30,9 +30,19 @@ public class AccountsRestController {
         return accountsConverter.registerAccountConvert(accountsDto);
     }
 
-    @PostMapping("/accounts/addUser/{userId}")
-    public void addUser(@RequestBody AccountResponseDto accountResponseDto, @PathVariable int userId) {
-        accountsConverter.addUserConvert(accountResponseDto,userId);
+    @PostMapping("/accounts/addUser/{accountId}")
+    public void addUser(@RequestBody int userId, @PathVariable int accountId) {
+        accountsConverter.addUserConvert(accountId,userId);
 
+    }
+
+    @PostMapping("/accounts/deposit/{accountId}")
+    public void deposit(@RequestBody double balance, @PathVariable int accountId) {
+        accountsConverter.depositMoney(balance,accountId);
+    }
+
+    @PostMapping("/accounts/withdraw/{accountId}")
+    public void withdraw(@RequestBody double balance, @PathVariable int accountId) {
+        accountsConverter.withdrawMoney(balance,accountId);
     }
 }
