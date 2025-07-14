@@ -66,6 +66,8 @@ public class AccountsConverter {
                 .id(account.getId())
                 .typeAccount(account.getTypeAccount())
                 .description(account.getDescription())
+                .userIds(getIds(account.getUsers()))
+                .balance(account.getBalance())
                 .build();
     }
 
@@ -85,9 +87,39 @@ public class AccountsConverter {
         return toResponseDto(accountsService.save(toEntity(accountsDto)));
     }
 
-    public void addUserConvert(AccountResponseDto accountResponseDto, int userId){
-        AccountsDto dto=accountValidation.validateUsersAccount(accountResponseDto,userId);
-        Accounts accToUpdate=toEntity(dto, accountsService.findById(accountResponseDto.getId()));
+    public void addUserConvert(int accountId, int userId){
+        AccountsDto dto=accountValidation.validateUsersAccount(accountId,userId);
+        Accounts accToUpdate=toEntity(dto, accountsService.findById(accountId));
         accountsService.save(accToUpdate);
+    }
+
+    public void depositMoney(double balance, int accountId) {
+        Accounts account=accountsService.findById(accountId);
+
+        AccountsDto dto=AccountsDto.builder()
+                .typeAccount(account.getTypeAccount())
+                .description(account.getDescription())
+                .balance(account.getBalance()+balance)
+                .ids(getIds(account.getUsers()))
+                .build();
+
+        accountsService.save(toEntity(dto,account));
+    }
+
+    public void withdrawMoney(double moneyToWithdraw, int accountId) {
+
+        Accounts account=accountsService.findById(accountId);
+        if(account.getBalance()-moneyToWithdraw<0){
+            throw new RuntimeException("Cannot withdraw more than current balance");
+        }
+
+        AccountsDto dto=AccountsDto.builder()
+                .typeAccount(account.getTypeAccount())
+                .description(account.getDescription())
+                .balance(account.getBalance()-moneyToWithdraw)
+                .ids(getIds(account.getUsers()))
+                .build();
+
+        accountsService.save(toEntity(dto,account));
     }
 }

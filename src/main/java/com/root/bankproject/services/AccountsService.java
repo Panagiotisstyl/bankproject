@@ -4,8 +4,10 @@ import com.root.bankproject.entities.Accounts;
 import com.root.bankproject.repositories.AccountsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,11 @@ public class AccountsService {
             return false;
         accountsRepository.deleteById(id);
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Accounts> findByIdWithUsers(int accId) {
+        return accountsRepository.findByIdWithUsers(accId);
     }
 
 }
