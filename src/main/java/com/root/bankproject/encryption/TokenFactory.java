@@ -21,6 +21,7 @@ public class TokenFactory {
 
     }
 
+    //TODO: REMOVE
     public boolean validateToken(String token){
 
         String[] parts = token.split("\\|");

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+//TODO: table names ARE plural, with all lower cases
+//TODO: class names should NOT be plural
 @Builder
 @AllArgsConstructor
 @Getter
