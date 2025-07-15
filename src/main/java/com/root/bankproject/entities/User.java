@@ -11,12 +11,12 @@ import lombok.*;
 @Entity
 @ToString
 @Table(name="users")
-public class Users {
+public class User {
 
     @Column(name="id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Id
-    private int id;
+    private Integer id;
 
     @Column(name="username")
     private String username;
@@ -26,6 +26,5 @@ public class Users {
 
     @Column(name="password")
     private String password;
-
 
 }
