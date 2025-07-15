@@ -1,11 +1,14 @@
 package com.root.bankproject.services;
 
 import com.root.bankproject.entities.Account;
+import com.root.bankproject.entities.User;
 import com.root.bankproject.repositories.AccountsRepository;
+import com.root.bankproject.validations.AccountValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +17,8 @@ import java.util.Optional;
 public class AccountsService {
 
     private final AccountsRepository accountsRepository;
+    private final AccountValidation accountValidation;
+    private final UsersService usersService;
 
     public List<Account> findAll(){
         return accountsRepository.findAll();
@@ -28,8 +33,27 @@ public class AccountsService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Accounts> findByIdWithUsers(int accId) {
+    public Optional<Account> findByIdWithUsers(int accId) {
         return accountsRepository.findByIdWithUsers(accId);
     }
+
+    public void addUser(int accountId, int userId){
+        accountValidation.validateUsersAccount(accountId, userId);
+        Account acc=findById(accountId);
+        User user=usersService.findById(userId);
+
+        List<User> updatedUsers = new ArrayList<>(acc.getUsers());
+        updatedUsers.add(user);
+
+        Account updated=Account.builder()
+                .id(acc.getId())
+                .description(acc.getDescription())
+                .typeAccount(acc.getTypeAccount())
+                .users(updatedUsers)
+                .build();
+
+        accountsRepository.save(updated);
+    }
+
 
 }

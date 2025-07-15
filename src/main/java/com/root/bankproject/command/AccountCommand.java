@@ -5,7 +5,6 @@ import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.entities.Account;
 import com.root.bankproject.services.AccountsService;
-import com.root.bankproject.validations.AccountValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ public class AccountCommand {
 
     private final AccountsService accountsService;
     private final AccountsConverter accountsConverter;
-    private final AccountValidation accountValidation;
 
 
 
@@ -33,11 +31,42 @@ public class AccountCommand {
         return accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
     }
 
-    public void addUser(AccountResponseDto accountResponseDto, int userId){
+    public void addUser(int accountId, int userId){
 
-        AccountsDto dto=accountValidation.validateUsersAccount(accountResponseDto,userId);
-        Account accToUpdate=accountsConverter.toEntity(dto, accountsService.findById(accountResponseDto.getId()));
-        accountsService.save(accToUpdate);
+        accountsService.addUser(accountId,userId);
+    }
+
+    public void depositMoney(double balance, int accountId) {
+
+        Account account=accountsService.findById(accountId);
+
+        Account updated=Account.builder()
+                .id(account.getId())
+                .typeAccount(account.getTypeAccount())
+                .description(account.getDescription())
+                .balance(account.getBalance()+balance)
+                .users(account.getUsers())
+                .build();
+
+        accountsService.save(updated);
+    }
+
+    public void withdrawMoney(double moneyToWithdraw, int accountId) {
+
+        Account account=accountsService.findById(accountId);
+        if(account.getBalance()-moneyToWithdraw<0){
+            throw new RuntimeException("Cannot withdraw more than current balance");
+        }
+
+        Account updated=Account.builder()
+                .id(account.getId())
+                .typeAccount(account.getTypeAccount())
+                .description(account.getDescription())
+                .balance(account.getBalance()-moneyToWithdraw)
+                .users(account.getUsers())
+                .build();
+
+        accountsService.save(updated);
     }
 
 }

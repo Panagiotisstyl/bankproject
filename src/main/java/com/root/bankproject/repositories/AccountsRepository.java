@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface AccountsRepository extends JpaRepository<Account,Integer> {
-    @Query("SELECT a FROM Accounts a LEFT JOIN FETCH a.users WHERE a.id = :id")
+    @Query("SELECT a FROM Account a LEFT JOIN FETCH a.users WHERE a.id = :id")
     Optional<Account> findByIdWithUsers(@Param("id") Integer id);
 }

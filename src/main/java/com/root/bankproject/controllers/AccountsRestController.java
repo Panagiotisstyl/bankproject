@@ -31,16 +31,17 @@ public class AccountsRestController implements AccountApi {
         return accountCommand.registerAccount(accountsDto);
     }
 
-    public void addUser(@RequestBody AccountResponseDto accountResponseDto, @PathVariable int userId) {
-        accountCommand.addUser(accountResponseDto,userId);
+    public void addUser(@PathVariable int accountId, @PathVariable int userId) {
+        accountCommand.addUser(accountId, userId);
 
-    @PostMapping("/accounts/deposit/{accountId}")
-    public void deposit(@RequestBody double balance, @PathVariable int accountId) {
-        accountsConverter.depositMoney(balance,accountId);
+
     }
 
-    @PostMapping("/accounts/withdraw/{accountId}")
-    public void withdraw(@RequestBody double balance, @PathVariable int accountId) {
-        accountsConverter.withdrawMoney(balance,accountId);
+    public void deposit ( @PathVariable int accountId, @PathVariable double balance){
+        accountCommand.depositMoney(balance, accountId);
+    }
+
+    public void withdraw (@PathVariable int accountId, @PathVariable double balance){
+        accountCommand.withdrawMoney(balance, accountId);
     }
 }

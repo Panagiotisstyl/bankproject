@@ -1,7 +1,7 @@
 package com.root.bankproject.encryption;
 
 
-import com.root.bankproject.entities.Accounts;
+import com.root.bankproject.entities.Account;
 import com.root.bankproject.entities.User;
 import com.root.bankproject.services.AccountsService;
 import com.root.bankproject.services.UsersService;
@@ -33,7 +33,7 @@ public class TokenFactory {
         int userId=Integer.parseInt(parts[1]);
         boolean userHasAccess=false;
 
-        Accounts acc;
+        Account acc;
         if(accountsService.findByIdWithUsers(accId).isPresent()) {
             acc=accountsService.findByIdWithUsers(accId).get();
         }
