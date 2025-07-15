@@ -1,6 +1,6 @@
 package com.root.bankproject.services;
 
-import com.root.bankproject.entities.Accounts;
+import com.root.bankproject.entities.Account;
 import com.root.bankproject.repositories.AccountsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,29 +13,16 @@ public class AccountsService {
 
     private final AccountsRepository accountsRepository;
 
-    public List<Accounts> findAll(){
+    public List<Account> findAll(){
         return accountsRepository.findAll();
     }
 
-    public Accounts findById(int id){
+    public Account findById(int id){
         return accountsRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
     }
 
-    public Accounts save(Accounts accounts){
-        return accountsRepository.save(accounts);
-    }
-
-    public void addUser(Accounts accounts){
-
-        save(accounts);
-    }
-
-    //TODO: delete this. its unused
-    public boolean deleteById(int id){
-        if(!accountsRepository.existsById(id))
-            return false;
-        accountsRepository.deleteById(id);
-        return true;
+    public Account save(Account account){
+        return accountsRepository.save(account);
     }
 
 }

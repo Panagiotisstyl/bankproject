@@ -3,8 +3,7 @@ package com.root.bankproject.converters;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.encryption.BcryptHashing;
-import com.root.bankproject.entities.Users;
-import com.root.bankproject.services.UsersService;
+import com.root.bankproject.entities.User;
 import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,16 +15,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsersConverter {
 
-
-    private final UsersService usersService;
-
-    public static Users toEntity(UsersDto usersDto){
+    public static User toEntity(UsersDto usersDto){
         return toEntity(usersDto,null);
     }
 
-    public static Users toEntity(UsersDto usersDto, @Nullable Users existing){
+    public static User toEntity(UsersDto usersDto, @Nullable User existing){
 
-        var builder = Users.builder();
+        var builder = User.builder();
 
         if(existing != null){
             builder.id(existing.getId());
@@ -39,28 +35,15 @@ public class UsersConverter {
 
     }
 
-    public static UserResponseDto toResponseDto(Users user){
+    public static UserResponseDto toResponseDto(User user){
         return UserResponseDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .build();
     }
 
-    public static List<UserResponseDto> toDtoList(List<Users> users){
+    public static List<UserResponseDto> toDtoList(List<User> users){
         return users.stream().map(UsersConverter::toResponseDto).collect(Collectors.toList());
     }
-
-    public List<UserResponseDto> findAllConvert(){
-        return toDtoList(usersService.findALl());
-    }
-
-    public UserResponseDto findByIdConvert(int userId){
-        return toResponseDto(usersService.findById(userId));
-    }
-
-    public UserResponseDto registerUserConvert(UsersDto usersDto) {
-        return toResponseDto(usersService.save(toEntity(usersDto)));
-    }
-
 
 }

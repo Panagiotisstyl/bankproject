@@ -4,8 +4,8 @@ package com.root.bankproject.validations;
 import com.root.bankproject.converters.AccountsConverter;
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
-import com.root.bankproject.entities.Accounts;
-import com.root.bankproject.entities.Users;
+import com.root.bankproject.entities.Account;
+import com.root.bankproject.entities.User;
 import com.root.bankproject.enums.TypeAccount;
 import com.root.bankproject.services.AccountsService;
 import com.root.bankproject.services.UsersService;
@@ -24,13 +24,13 @@ public class AccountValidation {
 
     public AccountsDto validateUsersAccount(AccountResponseDto dto, int userId){
 
-            Accounts account= accountsService.findById(dto.getId());
+            Account account= accountsService.findById(dto.getId());
 
             if(account.getTypeAccount()== TypeAccount.SINGLE && !account.getUsers().isEmpty()){
                 throw new RuntimeException("Cannot add user, account type is single");
             }
 
-            List<Users> newList= account.getUsers();
+            List<User> newList= account.getUsers();
 
             newList.add(usersService.findById(userId));
 

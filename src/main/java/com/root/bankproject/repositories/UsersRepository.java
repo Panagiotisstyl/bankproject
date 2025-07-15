@@ -1,12 +1,11 @@
 package com.root.bankproject.repositories;
 
-import com.root.bankproject.entities.Users;
+import com.root.bankproject.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-//TODO: change to optional
-public interface UsersRepository extends JpaRepository<Users,Integer> {
+public interface UsersRepository extends JpaRepository<User,Integer> {
 
-    Optional<Users> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }
