@@ -2,7 +2,7 @@ package com.root.bankproject.encryption;
 
 
 import com.root.bankproject.entities.Accounts;
-import com.root.bankproject.entities.Users;
+import com.root.bankproject.entities.User;
 import com.root.bankproject.services.AccountsService;
 import com.root.bankproject.services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class TokenFactory {
     private final AccountsService accountsService;
     private final UsersService usersService;
 
-    public static String generateToken(Users user){
+    public static String generateToken(User user){
 
         long timestamp = System.currentTimeMillis();
         return UUID.randomUUID().toString().toUpperCase()
@@ -40,8 +40,8 @@ public class TokenFactory {
         else
             return false;
 
-        List<Users> users=acc.getUsers();
-        for(Users user:users){
+        List<User> users=acc.getUsers();
+        for(User user:users){
             if (user.getId() == userId) {
                 userHasAccess = true;
                 break;
@@ -57,7 +57,7 @@ public class TokenFactory {
         String [] parts = authorizationHeader.split("\\|");
         int userId=Integer.parseInt(parts[1]);
 
-        Users userX=usersService.findById(userId);
+        User userX=usersService.findById(userId);
         return userX != null;
     }
 }
