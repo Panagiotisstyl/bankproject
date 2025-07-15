@@ -1,38 +1,38 @@
 package com.root.bankproject.controllers;
 
-import com.root.bankproject.converters.AccountsConverter;
+import com.root.bankproject.command.AccountCommand;
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+
 @RestController
-@RequestMapping("api/v1")
-public class AccountsRestController {
+@RequiredArgsConstructor
+public class AccountsRestController implements AccountApi {
 
-    private final AccountsConverter accountsConverter;
+   private final AccountCommand accountCommand;
 
-    @GetMapping("/accounts")
+
     public List<AccountResponseDto> findALlAccounts() {
-        return accountsConverter.findALlConvert();
+        return accountCommand.findALl();
     }
 
-    @GetMapping("/accounts/{accountId}")
+
     public AccountResponseDto findAccountById(@PathVariable int accountId) {
-        return accountsConverter.findByIdConvert(accountId);
+        return accountCommand.findById(accountId);
     }
 
-    @PostMapping("/accounts")
     public AccountResponseDto registerAccount(@RequestBody AccountsDto accountsDto) {
-        return accountsConverter.registerAccountConvert(accountsDto);
+        return accountCommand.registerAccount(accountsDto);
     }
 
-    @PostMapping("/accounts/addUser/{userId}")
     public void addUser(@RequestBody AccountResponseDto accountResponseDto, @PathVariable int userId) {
-        accountsConverter.addUserConvert(accountResponseDto,userId);
+        accountCommand.addUser(accountResponseDto,userId);
 
     }
 }
