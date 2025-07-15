@@ -15,9 +15,10 @@ public interface UserApi {
     @GetMapping("/{userId}")
     UserResponseDto findById(@PathVariable int userId);
 
-    @PostMapping
+    @PostMapping("/register")
     UserResponseDto registerUser(@RequestBody UsersDto usersDto);
 
-    @PostMapping("/register")
+    @PostMapping("/login")
     String userLogin(@RequestBody UsersDto usersDto);
+
 }

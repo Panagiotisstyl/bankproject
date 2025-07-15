@@ -2,7 +2,6 @@ package com.root.bankproject.controllers;
 
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +20,13 @@ public interface AccountApi {
     @PostMapping
     AccountResponseDto registerAccount(@RequestBody AccountsDto accountsDto);
 
-    @PostMapping("/addUser/{userId}")
-    void addUser(@RequestBody AccountResponseDto accountResponseDto, @PathVariable int userId);
+    @PostMapping("/addUser/{accountId}/{userId}")
+    void addUser(@PathVariable int accountId, @PathVariable int userId);
+
+    @PostMapping("/deposit/{accountId}/{balance}")
+    void deposit(@PathVariable int accountId, @PathVariable double balance);
+
+    @PostMapping("/withdraw/{accountId}/{balance}")
+    void withdraw(@PathVariable int accountId, @PathVariable double balance);
 
 }

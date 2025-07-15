@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.util.List;
 
-
 @Builder
 @AllArgsConstructor
 @Getter
@@ -22,6 +21,7 @@ public class Account {
     @Id
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="type_account")
     private TypeAccount typeAccount;
 
@@ -31,9 +31,14 @@ public class Account {
     @Column(name="balance")
     private double balance;
 
-    @OneToMany
-    @JoinColumn(name="userId")
+    @ManyToMany
+    @JoinTable(
+            name = "account_users",  // join table name
+            joinColumns = @JoinColumn(name = "account_id"), // this entity FK
+            inverseJoinColumns = @JoinColumn(name = "user_id") // other entity FK
+    )
     private List<User> users;
+
 
 
 

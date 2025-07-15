@@ -17,6 +17,7 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
 
 
     private final TokenFactory tokenFactory;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

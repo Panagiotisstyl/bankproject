@@ -30,7 +30,6 @@ public class UsersRestController implements UserApi{
         return userCommand.registerUser(usersDto);
     }
 
-    @PostMapping("/users/login")
     public String userLogin(@RequestBody UsersDto usersDto){
         return userCommand.userLogin(usersDto);
     }
