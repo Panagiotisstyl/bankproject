@@ -25,6 +25,12 @@ public class AccountsService {
         return accountsRepository.save(accounts);
     }
 
+    public void addUser(Accounts accounts){
+
+        save(accounts);
+    }
+
+    //TODO: delete this. its unused
     public boolean deleteById(int id){
         if(!accountsRepository.existsById(id))
             return false;

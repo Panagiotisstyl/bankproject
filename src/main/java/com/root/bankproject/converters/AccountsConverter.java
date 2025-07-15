@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//TODO: from all converters dont call .save .findById etc.
 @Component
 @RequiredArgsConstructor
 public class AccountsConverter {
