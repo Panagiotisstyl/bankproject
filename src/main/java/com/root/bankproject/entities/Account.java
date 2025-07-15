@@ -20,7 +20,7 @@ public class Account {
     @Column(name="id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Id
-    private int id;
+    private Integer id;
 
     @Column(name="type_account")
     private TypeAccount typeAccount;
