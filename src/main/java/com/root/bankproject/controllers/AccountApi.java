@@ -2,25 +2,26 @@ package com.root.bankproject.controllers;
 
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+
+@RequestMapping("api/v1/accounts")
 public interface AccountApi {
 
-    @GetMapping("/accounts")
+    @GetMapping
     List<AccountResponseDto> findALlAccounts();
 
-    @GetMapping("/accounts/{accountId}")
+    @GetMapping("/{accountId}")
     AccountResponseDto findAccountById(@PathVariable int accountId);
 
-    @PostMapping("/accounts")
+    @PostMapping
     AccountResponseDto registerAccount(@RequestBody AccountsDto accountsDto);
 
-    @PostMapping("/accounts/addUser/{userId}")
+    @PostMapping("/addUser/{userId}")
     void addUser(@RequestBody AccountResponseDto accountResponseDto, @PathVariable int userId);
 
 }

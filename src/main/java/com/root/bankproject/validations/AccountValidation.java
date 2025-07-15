@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class AccountValidation {
                     .typeAccount(account.getTypeAccount())
                     .description(account.getDescription())
                     .balance(account.getBalance())
-                    .ids(AccountsConverter.getIds(newList))
+                    .ids(newList.stream().map(User::getId).collect(Collectors.toList()))
                     .build();
 
     }

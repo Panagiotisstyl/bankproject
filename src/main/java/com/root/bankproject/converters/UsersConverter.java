@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Component
 @RequiredArgsConstructor
 public class UsersConverter {
@@ -21,13 +23,8 @@ public class UsersConverter {
 
     public static User toEntity(UsersDto usersDto, @Nullable User existing){
 
-        var builder = User.builder();
-
-        if(existing != null){
-            builder.id(existing.getId());
-        }
-
-        return builder
+        return User.builder()
+                .id(nonNull(existing)?existing.getId():null)
                 .username(usersDto.getUsername())
                 .password(BcryptHashing.hashPassword(usersDto.getPassword()))
                 .email(usersDto.getEmail())
