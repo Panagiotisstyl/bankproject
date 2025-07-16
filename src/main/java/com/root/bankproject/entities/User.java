@@ -3,7 +3,6 @@ package com.root.bankproject.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Builder
 @Getter
 @AllArgsConstructor

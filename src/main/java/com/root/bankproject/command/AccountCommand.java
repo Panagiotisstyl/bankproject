@@ -5,7 +5,6 @@ import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.entities.Account;
 import com.root.bankproject.services.AccountsService;
-import com.root.bankproject.validations.AccountValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ public class AccountCommand {
 
     private final AccountsService accountsService;
     private final AccountsConverter accountsConverter;
-    private final AccountValidation accountValidation;
 
 
 
@@ -33,11 +31,21 @@ public class AccountCommand {
         return accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
     }
 
-    public void addUser(AccountResponseDto accountResponseDto, int userId){
+    public AccountResponseDto addUser(int accountId, int userId){
+        return accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
+    }
 
-        AccountsDto dto=accountValidation.validateUsersAccount(accountResponseDto,userId);
-        Account accToUpdate=accountsConverter.toEntity(dto, accountsService.findById(accountResponseDto.getId()));
-        accountsService.save(accToUpdate);
+    public AccountResponseDto depositMoney(double balance, int accountId) {
+        Account account=accountsService.findById(accountId);
+        account.depositBalance(balance);
+        return accountsConverter.toResponseDto(accountsService.save(account));
+
+    }
+
+    public AccountResponseDto withdrawMoney(double moneyToWithdraw, int accountId) {
+        Account account=accountsService.findById(accountId);
+        account.withdrawal(moneyToWithdraw);
+        return accountsConverter.toResponseDto(accountsService.save(account));
     }
 
 }
