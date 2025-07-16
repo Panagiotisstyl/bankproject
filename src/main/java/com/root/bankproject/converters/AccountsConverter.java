@@ -3,6 +3,7 @@ package com.root.bankproject.converters;
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.entities.Account;
+import com.root.bankproject.entities.User;
 import com.root.bankproject.services.UsersService;
 import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +40,13 @@ public class AccountsConverter {
                 .id(account.getId())
                 .typeAccount(account.getTypeAccount())
                 .description(account.getDescription())
+                .userIds(account.getUsers().stream().map(User::getId).collect(Collectors.toList()))
+                .balance(account.getBalance())
                 .build();
     }
 
     public List<AccountResponseDto> toDtoList(List<Account> accounts){
         return accounts.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
+
 }
