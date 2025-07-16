@@ -1,5 +1,7 @@
 package com.root.bankproject.controllers;
 
+import com.root.bankproject.ExceptionHandler.RequestsHandler;
+import com.root.bankproject.ExceptionHandler.Response;
 import com.root.bankproject.command.AccountCommand;
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
@@ -16,32 +18,31 @@ import java.util.List;
 public class AccountsRestController implements AccountApi {
 
    private final AccountCommand accountCommand;
+   private final RequestsHandler requestsHandler;
 
 
-    public List<AccountResponseDto> findALlAccounts() {
-        return accountCommand.findALl();
+    public Response<List<AccountResponseDto>> findALlAccounts() {
+        return requestsHandler.okReq(accountCommand.findALl());
     }
 
 
-    public AccountResponseDto findAccountById(@PathVariable int accountId) {
-        return accountCommand.findById(accountId);
+    public Response<AccountResponseDto> findAccountById(@PathVariable int accountId) {
+        return requestsHandler.okReq(accountCommand.findById(accountId));
     }
 
-    public AccountResponseDto registerAccount(@RequestBody AccountsDto accountsDto) {
-        return accountCommand.registerAccount(accountsDto);
+    public Response<AccountResponseDto> registerAccount(@RequestBody AccountsDto accountsDto) {
+        return requestsHandler.okReq(accountCommand.registerAccount(accountsDto));
     }
 
-    public void addUser(@PathVariable int accountId, @PathVariable int userId) {
-        accountCommand.addUser(accountId, userId);
-
-
+    public Response<AccountResponseDto> addUser(@PathVariable int accountId, @PathVariable int userId) {
+        return requestsHandler.okReq(accountCommand.addUser(accountId, userId));
     }
 
-    public void deposit ( @PathVariable int accountId, @PathVariable double balance){
-        accountCommand.depositMoney(balance, accountId);
+    public Response<AccountResponseDto> deposit ( @PathVariable int accountId, @PathVariable double balance){
+        return requestsHandler.okReq(accountCommand.depositMoney(balance, accountId));
     }
 
-    public void withdraw (@PathVariable int accountId, @PathVariable double balance){
-        accountCommand.withdrawMoney(balance, accountId);
+    public Response<AccountResponseDto> withdraw (@PathVariable int accountId, @PathVariable double balance){
+        return requestsHandler.okReq(accountCommand.withdrawMoney(balance, accountId));
     }
 }

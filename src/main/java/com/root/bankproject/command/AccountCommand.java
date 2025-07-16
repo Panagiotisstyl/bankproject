@@ -31,21 +31,21 @@ public class AccountCommand {
         return accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
     }
 
-    public void addUser(int accountId, int userId){
-        accountsService.addUser(accountId,userId);
+    public AccountResponseDto addUser(int accountId, int userId){
+        return accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
     }
 
-    public void depositMoney(double balance, int accountId) {
+    public AccountResponseDto depositMoney(double balance, int accountId) {
         Account account=accountsService.findById(accountId);
         account.depositBalance(balance);
-        accountsService.save(account);
+        return accountsConverter.toResponseDto(accountsService.save(account));
 
     }
 
-    public void withdrawMoney(double moneyToWithdraw, int accountId) {
+    public AccountResponseDto withdrawMoney(double moneyToWithdraw, int accountId) {
         Account account=accountsService.findById(accountId);
         account.withdrawal(moneyToWithdraw);
-        accountsService.save(account);
+        return accountsConverter.toResponseDto(accountsService.save(account));
     }
 
 }

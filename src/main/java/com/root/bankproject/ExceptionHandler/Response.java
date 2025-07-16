@@ -2,14 +2,15 @@ package com.root.bankproject.ExceptionHandler;
 
 import lombok.*;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @ToString
 @Builder
-public class ErrorResponse {
+public class Response<T> {
 
     private int statusCode;
-    private String message;
+    private T data;
 
 }

@@ -11,10 +11,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorResponse handleRuntimeException(RuntimeException ex) {
-        return ErrorResponse.builder()
+    public @ResponseBody Response<String> handleRuntimeException(RuntimeException ex) {
+        return Response.<String>builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(ex.getMessage())
+                .data(ex.getMessage())
                 .build();
     }
 }
