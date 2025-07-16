@@ -37,14 +37,14 @@ public class AccountsService {
         return accountsRepository.findByIdWithUsers(accId);
     }
 
-    public void addUser(int accountId, int userId){
+    public Account addUser(int accountId, int userId){
 
         Account acc=findById(accountId);
         accountValidation.validateUsersAccount(acc);
 
         User user=usersService.findById(userId);
         acc.getUsers().add(user);
-        accountsRepository.save(acc);
+        return accountsRepository.save(acc);
 
     }
 

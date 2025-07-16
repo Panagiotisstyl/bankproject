@@ -1,6 +1,8 @@
 package com.root.bankproject.controllers;
 
 
+import com.root.bankproject.ExceptionHandler.RequestsHandler;
+import com.root.bankproject.ExceptionHandler.Response;
 import com.root.bankproject.command.UserCommand;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
@@ -17,21 +19,22 @@ public class UsersRestController implements UserApi{
 
 
     private final UserCommand userCommand;
+    private final RequestsHandler requestsHandler;
 
-    public List<UserResponseDto> findAll(){
-        return userCommand.findAll();
+    public Response<List<UserResponseDto>> findAll(){
+        return requestsHandler.okReq(userCommand.findAll());
     }
 
-    public UserResponseDto findById(@PathVariable int userId){
-        return userCommand.findById(userId);
+    public Response<UserResponseDto> findById(@PathVariable int userId){
+        return requestsHandler.okReq(userCommand.findById(userId));
     }
 
-    public UserResponseDto registerUser(@RequestBody UsersDto usersDto){
-        return userCommand.registerUser(usersDto);
+    public Response<UserResponseDto> registerUser(@RequestBody UsersDto usersDto){
+        return requestsHandler.okReq(userCommand.registerUser(usersDto));
     }
 
-    public String userLogin(@RequestBody UsersDto usersDto){
-        return userCommand.userLogin(usersDto);
+    public Response<String> userLogin(@RequestBody UsersDto usersDto){
+        return requestsHandler.okReq(userCommand.userLogin(usersDto));
     }
 
 }
