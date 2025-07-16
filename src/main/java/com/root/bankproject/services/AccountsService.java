@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,21 +38,14 @@ public class AccountsService {
     }
 
     public void addUser(int accountId, int userId){
-        accountValidation.validateUsersAccount(accountId, userId);
+
         Account acc=findById(accountId);
+        accountValidation.validateUsersAccount(acc);
+
         User user=usersService.findById(userId);
+        acc.getUsers().add(user);
+        accountsRepository.save(acc);
 
-        List<User> updatedUsers = new ArrayList<>(acc.getUsers());
-        updatedUsers.add(user);
-
-        Account updated=Account.builder()
-                .id(acc.getId())
-                .description(acc.getDescription())
-                .typeAccount(acc.getTypeAccount())
-                .users(updatedUsers)
-                .build();
-
-        accountsRepository.save(updated);
     }
 
 

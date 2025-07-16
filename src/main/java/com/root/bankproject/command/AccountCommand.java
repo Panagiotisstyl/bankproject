@@ -32,41 +32,20 @@ public class AccountCommand {
     }
 
     public void addUser(int accountId, int userId){
-
         accountsService.addUser(accountId,userId);
     }
 
     public void depositMoney(double balance, int accountId) {
-
         Account account=accountsService.findById(accountId);
+        account.depositBalance(balance);
+        accountsService.save(account);
 
-        Account updated=Account.builder()
-                .id(account.getId())
-                .typeAccount(account.getTypeAccount())
-                .description(account.getDescription())
-                .balance(account.getBalance()+balance)
-                .users(account.getUsers())
-                .build();
-
-        accountsService.save(updated);
     }
 
     public void withdrawMoney(double moneyToWithdraw, int accountId) {
-
         Account account=accountsService.findById(accountId);
-        if(account.getBalance()-moneyToWithdraw<0){
-            throw new RuntimeException("Cannot withdraw more than current balance");
-        }
-
-        Account updated=Account.builder()
-                .id(account.getId())
-                .typeAccount(account.getTypeAccount())
-                .description(account.getDescription())
-                .balance(account.getBalance()-moneyToWithdraw)
-                .users(account.getUsers())
-                .build();
-
-        accountsService.save(updated);
+        account.withdrawal(moneyToWithdraw);
+        accountsService.save(account);
     }
 
 }

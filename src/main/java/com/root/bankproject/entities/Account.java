@@ -39,7 +39,17 @@ public class Account {
     )
     private List<User> users;
 
+    public void depositBalance(double moneyToDeposit){
+        this.balance += moneyToDeposit;
+    }
+    public void withdrawal(double moneyToWithdraw){
 
+        if(moneyToWithdraw > this.balance){
+            throw new RuntimeException("Insufficient balance");
+        }
+        this.balance -= moneyToWithdraw;
+
+    }
 
 
 }
