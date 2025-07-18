@@ -25,7 +25,7 @@ public class AccountsService {
 
 
     public Account findById(int id){
-        return accountsRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+        return accountsRepository.findById(id).orElseThrow(()->new RuntimeException("Account not found"));
     }
 
     public Account save(Account account){
