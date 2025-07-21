@@ -14,7 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TokenFactory {
 
-    private final AccountsService accountsService;
     private final UsersService usersService;
 
     public static String generateToken(User user){
@@ -33,7 +32,7 @@ public class TokenFactory {
         boolean userHasAccess=false;
 
 
-        List<User> users=accountsService.findById(accId).getUsers();
+        List<User> users=usersService.findByAccountId(accId);
 
         for(User user:users){
             if (user.getId() == userId) {

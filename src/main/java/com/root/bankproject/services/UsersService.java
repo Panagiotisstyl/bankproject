@@ -29,4 +29,8 @@ public class UsersService {
     public User findByEmail(String email) {
         return usersRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public List<User> findByAccountId(int accountId) {
+        return usersRepository.findAllByAccounts_Id(accountId);
+    }
 }
