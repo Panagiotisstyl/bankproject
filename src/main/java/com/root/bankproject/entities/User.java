@@ -3,6 +3,8 @@ package com.root.bankproject.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -25,5 +27,8 @@ public class User {
 
     @Column(name="password")
     private String password;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Account> accounts;
 
 }

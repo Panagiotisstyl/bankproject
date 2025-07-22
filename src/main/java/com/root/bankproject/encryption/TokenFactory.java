@@ -1,7 +1,6 @@
 package com.root.bankproject.encryption;
 
 
-import com.root.bankproject.entities.Account;
 import com.root.bankproject.entities.User;
 import com.root.bankproject.services.AccountsService;
 import com.root.bankproject.services.UsersService;
@@ -15,7 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TokenFactory {
 
-    private final AccountsService accountsService;
     private final UsersService usersService;
 
     public static String generateToken(User user){
@@ -33,14 +31,9 @@ public class TokenFactory {
         int userId=Integer.parseInt(parts[1]);
         boolean userHasAccess=false;
 
-        Account acc;
-        if(accountsService.findByIdWithUsers(accId).isPresent()) {
-            acc=accountsService.findByIdWithUsers(accId).get();
-        }
-        else
-            return false;
 
-        List<User> users=acc.getUsers();
+        List<User> users=usersService.findByAccountId(accId);
+
         for(User user:users){
             if (user.getId() == userId) {
                 userHasAccess = true;
