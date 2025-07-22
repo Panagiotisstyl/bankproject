@@ -10,14 +10,18 @@ import com.root.bankproject.entities.User;
 import com.root.bankproject.factories.UserFactory;
 import com.root.bankproject.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,7 +54,10 @@ public class UsersRestControllerTest extends ControllerTestHelper{
             User user1=usersRepository.save(UserFactory.createUser("pan","styl","asas"));
             User user2=usersRepository.save(UserFactory.createUser("pana","styli","asasa"));
 
-            List<UserResponseDto> actualUsers= List.of(UsersConverter.toResponseDto(user1),UsersConverter.toResponseDto(user2));
+
+            Set<Tuple> expectedTuples=Set.of(tuple(user1.getId(),user1.getUsername())
+                    ,tuple(user2.getId(),user2.getUsername()));
+
 
             var result=performGet("/api/v1/users");
 
@@ -58,15 +65,10 @@ public class UsersRestControllerTest extends ControllerTestHelper{
 
             assertThat(usersRepository.findAll()).hasSize(2);
 
-            for(int i=0;i<2;i++){
+            Set<Tuple> actualTuples=expectedUsers.getData().stream()
+                    .map(currentUser ->tuple(currentUser.getId(), currentUser.getUsername())).collect(Collectors.toSet());
 
-                UserResponseDto actualUser=actualUsers.get(i);
-                UserResponseDto expectedUser=expectedUsers.getData().get(i);
-
-                assertThat(actualUser.getId()).isEqualTo(expectedUser.getId());
-                assertThat(actualUser.getUsername()).isEqualTo(expectedUser.getUsername());
-
-            }
+            assertThat(actualTuples).containsExactlyInAnyOrderElementsOf(expectedTuples);
         }
     }
 
