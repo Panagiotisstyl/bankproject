@@ -6,6 +6,7 @@ import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.services.UsersService;
 import com.root.bankproject.validations.UserValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserCommand {
 
     private final UsersService usersService;
     private final UserValidation userValidation;
+    private final KafkaTemplate<String, UserResponseDto> kafkaTemplateUser;
 
     public List<UserResponseDto> findAll(){
         return UsersConverter.toDtoList(usersService.findALl());
@@ -27,7 +29,9 @@ public class UserCommand {
     }
 
     public UserResponseDto registerUser(UsersDto usersDto) {
-        return UsersConverter.toResponseDto(usersService.save(UsersConverter.toEntity(usersDto)));
+        UserResponseDto userDto=UsersConverter.toResponseDto(usersService.save(UsersConverter.toEntity(usersDto)));
+        kafkaTemplateUser.send("user.created", userDto);
+        return userDto;
     }
 
     public String userLogin(UsersDto usersDto){
