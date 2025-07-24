@@ -6,6 +6,7 @@ import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.entities.Account;
 import com.root.bankproject.services.AccountsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class AccountCommand {
 
     private final AccountsService accountsService;
     private final AccountsConverter accountsConverter;
-
+    private final KafkaTemplate<String, AccountResponseDto> kafkaTemplateAccount;
 
 
     public List<AccountResponseDto> findALl(){
@@ -28,7 +29,9 @@ public class AccountCommand {
     }
 
     public AccountResponseDto registerAccount(AccountsDto accountsDto){
-        return accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
+        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
+        kafkaTemplateAccount.send("account.created", accDto);
+        return accDto;
     }
 
     public AccountResponseDto addUser(int accountId, int userId){
