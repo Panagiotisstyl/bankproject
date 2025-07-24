@@ -16,14 +16,18 @@ import com.root.bankproject.repositories.AccountsRepository;
 import com.root.bankproject.repositories.UsersRepository;
 import com.root.bankproject.services.UsersService;
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,8 +48,6 @@ public class AccountRestControllerTest extends ControllerTestHelper{
     @Autowired
     private UsersService usersService;
 
-    @Autowired
-    private AccountsConverter accountsConverter;
 
     @Nested
     class createAccount{
@@ -59,10 +61,16 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             assertThat(returnedAcc.getData().getBalance()).isEqualTo(accountsDto.getBalance());
             assertThat(returnedAcc.getData().getDescription()).isEqualTo(accountsDto.getDescription());
 
-            for(int i=0;i<accountsDto.getIds().size();i++){
-                assertThat(accountsDto.getIds()).contains((returnedAcc.getData().getUserIds().get(i)));
-            }
+            Set<Tuple> expectedUsers=Set.of(tuple(returnedAcc.getData().getUserIds()));
+
+
+
             Account accDb=accountsRepository.findById(returnedAcc.getData().getId()).get();
+
+            Set<Tuple> actualUsers=Set.of(tuple(usersService.findByAccountId(accDb.getId()).stream()
+                    .map(User::getId).collect(Collectors.toList())));
+
+            assertThat(expectedUsers).containsAll(actualUsers);
             assertThat(returnedAcc.getData().getTypeAccount()).isEqualTo(accDb.getTypeAccount());
             assertThat(returnedAcc.getData().getBalance()).isEqualTo(accDb.getBalance());
             assertThat(returnedAcc.getData().getDescription()).isEqualTo(accDb.getDescription());
@@ -93,22 +101,28 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             Account acc1=accountsRepository.save(accountFactory.createAccount(TypeAccount.SINGLE,"basic account",300.00));
             Account acc2=accountsRepository.save(accountFactory.createAccount(TypeAccount.SINGLE,"basic account2",400.00));
 
-            List<AccountResponseDto> actualAccounts=List.of(accountsConverter.toResponseDto(acc1),accountsConverter.toResponseDto(acc2));
+            Set<Tuple> expectedTuples=Set.of(tuple(acc1.getId(),acc1.getBalance()
+                    ,acc1.getDescription(), acc1.getTypeAccount()),tuple(acc2.getId(),acc2.getBalance()
+                    ,acc2.getDescription(), acc2.getTypeAccount()));
+
+            Set<Tuple> expectedUsers=Set.of(tuple(acc1.getUsers().stream().map(User::getId).collect(Collectors.toList())),
+                    tuple(acc2.getUsers().stream().map(User::getId).collect(Collectors.toList())));
 
             var result=performGet("/api/v1/accounts");
             var returnedAcc=readingValue(result,new TypeReference<Response<List<AccountResponseDto>>>() {});
 
             assertThat(accountsRepository.findAll()).hasSize(2);
 
-            for(int i=0;i<2;i++){
-                AccountResponseDto accountResponseDto=actualAccounts.get(i);
-                AccountResponseDto expectedAccs=returnedAcc.getData().get(i);
+            Set<Tuple> actualTuples=returnedAcc.getData().stream()
+                    .map(currentAcc->tuple(currentAcc.getId(),currentAcc.getBalance()
+                    ,currentAcc.getDescription(),currentAcc.getTypeAccount())).collect(Collectors.toSet());
 
-                assertThat(accountResponseDto.getTypeAccount()).isEqualTo(expectedAccs.getTypeAccount());
-                assertThat(accountResponseDto.getBalance()).isEqualTo(expectedAccs.getBalance());
-                assertThat(accountResponseDto.getDescription()).isEqualTo(expectedAccs.getDescription());
-                assertThat(accountResponseDto.getId()).isEqualTo(expectedAccs.getId());
-            }
+            Set<Tuple> actualUsers = returnedAcc.getData().stream()
+                    .map(currentAcc -> tuple(currentAcc.getUserIds()))
+                    .collect(Collectors.toSet());
+
+            assertThat(expectedTuples).containsExactlyInAnyOrderElementsOf(actualTuples);
+            assertThat(expectedUsers).containsExactlyInAnyOrderElementsOf(actualUsers);
         }
     }
 
