@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = RuntimeException.class)
+   @ExceptionHandler(value = RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody Response<String> handleRuntimeException(RuntimeException ex) {
         return Response.<String>builder()
