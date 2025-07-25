@@ -17,7 +17,8 @@ public class AccountCommand {
 
     private final AccountsService accountsService;
     private final AccountsConverter accountsConverter;
-    private final KafkaTemplate<String, AccountResponseDto> kafkaTemplateAccount;
+    private final KafkaTemplate<String, AccountsDto> kafkaTemplateAccount;
+    private final KafkaTemplate<String, AccountResponseDto> kafkaTemplateAccountResponse;
 
 
     public List<AccountResponseDto> findALl(){
@@ -30,25 +31,31 @@ public class AccountCommand {
 
     public AccountResponseDto registerAccount(AccountsDto accountsDto){
         AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
-        kafkaTemplateAccount.send("account.created", accDto);
+        kafkaTemplateAccount.send("account.created", accountsDto);
         return accDto;
     }
 
     public AccountResponseDto addUser(int accountId, int userId){
-        return accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
+        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
+        kafkaTemplateAccountResponse.send("user.addedToAccount", accDto);
+        return accDto;
     }
 
     public AccountResponseDto depositMoney(double balance, int accountId) {
         Account account=accountsService.findById(accountId);
         account.depositBalance(balance);
-        return accountsConverter.toResponseDto(accountsService.save(account));
+        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.save(account));
+        kafkaTemplateAccountResponse.send("deposit.money", accDto);
+        return accDto;
 
     }
 
     public AccountResponseDto withdrawMoney(double moneyToWithdraw, int accountId) {
         Account account=accountsService.findById(accountId);
         account.withdrawal(moneyToWithdraw);
-        return accountsConverter.toResponseDto(accountsService.save(account));
+        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.save(account));
+        kafkaTemplateAccountResponse.send("withdraw.money", accDto);
+        return accDto;
     }
 
 }
