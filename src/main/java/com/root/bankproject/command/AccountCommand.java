@@ -17,7 +17,6 @@ public class AccountCommand {
 
     private final AccountsService accountsService;
     private final AccountsConverter accountsConverter;
-    private final KafkaTemplate<String, AccountsDto> kafkaTemplateAccount;
     private final KafkaTemplate<String, AccountResponseDto> kafkaTemplateAccountResponse;
 
 
@@ -31,14 +30,14 @@ public class AccountCommand {
 
     public AccountResponseDto registerAccount(AccountsDto accountsDto){
         AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.save(accountsConverter.toEntity(accountsDto)));
-        kafkaTemplateAccount.send("account.created", accountsDto);
+        kafkaTemplateAccountResponse.send("account.created", accDto);
         return accDto;
     }
 
     public AccountResponseDto addUser(int accountId, int userId){
-        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
-        kafkaTemplateAccountResponse.send("user.addedToAccount", accDto);
-        return accDto;
+        AccountResponseDto accountResponseDto=accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
+        kafkaTemplateAccountResponse.send("user.addedToAccount", accountResponseDto);
+        return accountResponseDto;
     }
 
     public AccountResponseDto depositMoney(double balance, int accountId) {
