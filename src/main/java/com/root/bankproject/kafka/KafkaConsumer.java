@@ -48,10 +48,10 @@ public class KafkaConsumer {
                 userAuditRepository.save(userAudit);
             }
             catch(JsonMappingException e){
-                log.error("Error mapping json message");
+                log.error("Exception caught: "+ e.getMessage());
             }
             catch(JsonProcessingException e){
-                log.error("Error processing json message");
+                log.error("Exception caught: "+ e.getMessage());
             }
         }
         else{
@@ -65,10 +65,10 @@ public class KafkaConsumer {
                 accountAuditRepository.save(accountAudit);
             }
             catch(JsonMappingException e){
-                log.error("Error mapping json message");
+                log.error("Exception caught: "+ e.getMessage());
             }
             catch(JsonProcessingException e){
-                log.error("Error processing json message");
+                log.error("Exception caught: "+ e.getMessage());
             }
         }
 

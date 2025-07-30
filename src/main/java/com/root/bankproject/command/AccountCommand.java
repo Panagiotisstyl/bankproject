@@ -35,9 +35,9 @@ public class AccountCommand {
     }
 
     public AccountResponseDto addUser(int accountId, int userId){
-        AccountResponseDto accDto=accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
-        kafkaTemplateAccountResponse.send("user.addedToAccount", accDto);
-        return accDto;
+        AccountResponseDto accountResponseDto=accountsConverter.toResponseDto(accountsService.addUser(accountId,userId));
+        kafkaTemplateAccountResponse.send("user.addedToAccount", accountResponseDto);
+        return accountResponseDto;
     }
 
     public AccountResponseDto depositMoney(double balance, int accountId) {
