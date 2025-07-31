@@ -47,7 +47,7 @@ public class AccountsService {
     @CacheEvict(value = "accountList", allEntries = true)
     public Account addUser(int accountId, int userId){
 
-        Account acc=findById(accountId);
+        Account acc=accountsRepository.findById(accountId).orElseThrow(()->new RuntimeException("Account not found"));
         accountValidation.validateUsersAccount(acc);
 
         User user=usersService.findById(userId);
