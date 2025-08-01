@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 
@@ -25,7 +26,7 @@ public class AccountsService {
 
     @Cacheable(value="accountList")
     public List<Account> findAll(){
-        List<Account> accountList = accountsRepository.findAll();
+        List<Account> accountList=accountsRepository.findAll();
         return accountList.stream()
                 .map(this::accountWithUser)
                 .collect(Collectors.toList());
@@ -37,14 +38,18 @@ public class AccountsService {
         return accountWithUser(acc);
     }
 
-    @CachePut(value="account",key="#account.id")
+    @CachePut(value="account",key="#account.getId()")
     @CacheEvict(value = "accountList", allEntries = true)
     public Account save(Account account){
         return accountsRepository.save(account);
     }
 
-    @CachePut(value="account",key="#accountId")
-    @CacheEvict(value = "accountList", allEntries = true)
+    @CachePut(value="account", key="#accountId")
+    @Caching(evict = {
+            @CacheEvict(value = "accountList", allEntries = true),
+            @CacheEvict(value = "accountUserList", key = "#accountId"),
+            @CacheEvict(value = "userList", allEntries = true)
+    })
     public Account addUser(int accountId, int userId){
 
         Account acc=accountsRepository.findById(accountId).orElseThrow(()->new RuntimeException("Account not found"));
