@@ -3,16 +3,17 @@ package com.root.bankproject.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Builder
-@Getter
 @AllArgsConstructor
+@Getter
 @NoArgsConstructor
 @Entity
 @ToString
 @Table(name="users")
-public class User {
+public class User implements Serializable {
 
     @Column(name="id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)

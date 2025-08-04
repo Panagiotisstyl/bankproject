@@ -5,6 +5,7 @@ import com.root.bankproject.enums.TypeAccount;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Builder
@@ -13,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @ToString
-@Table(name="accounts")
-public class Account {
+@Table(name = "accounts")
+public class Account implements Serializable {
 
     @Column(name="id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
