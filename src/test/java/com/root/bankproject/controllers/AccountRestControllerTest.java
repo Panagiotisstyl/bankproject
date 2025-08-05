@@ -2,11 +2,11 @@ package com.root.bankproject.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.root.bankproject.ExceptionHandler.Response;
-import com.root.bankproject.converters.AccountsConverter;
 import com.root.bankproject.dtos.AccountResponseDto;
 import com.root.bankproject.dtos.AccountsDto;
 import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.encryption.BcryptHashing;
+import com.root.bankproject.encryption.SimpleAES;
 import com.root.bankproject.entities.Account;
 import com.root.bankproject.entities.User;
 import com.root.bankproject.enums.TypeAccount;
@@ -17,6 +17,7 @@ import com.root.bankproject.repositories.UsersRepository;
 import com.root.bankproject.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.groups.Tuple;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -78,6 +80,9 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             assertThat(returnedAcc.getData().getUserIds()).contains(usersService.findByAccountId(accDb.getId()).get(1).getId());
             assertThat(accountsRepository.findAll()).hasSize(1);
 
+            Awaitility.await().atMost(3, TimeUnit.SECONDS).untilAsserted(() ->
+                    assertThat(accountAuditRepository.findAll()).hasSize(1)
+            );
 
         }
 
@@ -162,17 +167,25 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             User userToAdd=usersRepository.save(UserFactory.createUser("panas","stylia@email.com", BcryptHashing.hashPassword("asasa")));
             Account acc=accountsRepository.save(accountFactory.createAccount(TypeAccount.JOINT,"basic account",300.00));
             //log in to generate token automatically at the test
+
             UsersDto loginCred=UserFactory.createUsersDto("pan","panstyl@email.com","asa");
             var result=performPost("/api/v1/users/login",loginCred);
             var returnedResponse=readingValue(result,new TypeReference<Response<String>>(){});
+            String token=returnedResponse.getData();
+            System.out.println(token);
 
-
+            String decrypted = SimpleAES.decrypt(token);
+            System.out.println("Decrypted token: " + decrypted);
 
             var resultAcc=performPostAuth("/api/v1/accounts/addUser/"+ acc.getId()+"/"+userToAdd.getId(),returnedResponse.getData());
             var returnedResponseAcc=readingValue(resultAcc,new TypeReference<Response<AccountResponseDto>>() {});
 
             assertThat(returnedResponseAcc.getData().getId()).isEqualTo(acc.getId());
             assertThat(returnedResponseAcc.getData().getUserIds()).contains(userToAdd.getId());
+
+            Awaitility.await().atMost(3, TimeUnit.SECONDS).untilAsserted(() ->
+                    assertThat(accountAuditRepository.findAll()).hasSize(1)
+            );
 
         }
 
@@ -182,7 +195,7 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             User userToAdd=usersRepository.save(UserFactory.createUser("panas","stylia@email.com", BcryptHashing.hashPassword("asasa")));
             Account acc=accountsRepository.save(accountFactory.createAccount(TypeAccount.JOINT,"basic account",300.00));
             mockMvc.perform(post("/api/v1/accounts/addUser/"+ acc.getId()+"/"+userToAdd.getId())
-                            .header("Authorization","asdasdasdasd" ))
+                            .header("Authorization","+UW29myzdV/FuLmOjbdMKgUBh6DN5amHLLqwkatz5VM=" ))
                     .andExpect(status().isUnauthorized())
                     .andReturn();
 
@@ -211,6 +224,10 @@ public class AccountRestControllerTest extends ControllerTestHelper{
             assertThat(returnedResponseAcc.getData().getId()).isEqualTo(acc.getId());
             assertThat(balanceEnd>balanceStart).isTrue();
 
+            Awaitility.await().atMost(3, TimeUnit.SECONDS).untilAsserted(() ->
+                    assertThat(accountAuditRepository.findAll()).hasSize(1)
+            );
+
         }
     }
 
@@ -232,6 +249,10 @@ public class AccountRestControllerTest extends ControllerTestHelper{
 
             assertThat(returnedResponseAcc.getData().getId()).isEqualTo(acc.getId());
             assertThat(balanceEnd<balanceStart).isTrue();
+
+            Awaitility.await().atMost(3, TimeUnit.SECONDS).untilAsserted(() ->
+                    assertThat(accountAuditRepository.findAll()).hasSize(1)
+            );
 
             //INSUFFICIENT BALANCE
             mockMvc.perform(post("/api/v1/accounts/withdraw/"+ acc.getId()+"/31000.00",returnedResponse.getData())
