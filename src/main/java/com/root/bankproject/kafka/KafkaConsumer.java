@@ -33,7 +33,7 @@ public class KafkaConsumer {
             "user.addedToAccount"
     }, groupId = "allTopics")
 
-    private void listenToALlTopics(String jsonMessage){
+    public void listenToAllTopics(String jsonMessage){
         log.info("Received message"+jsonMessage);
         String[] parts=jsonMessage.split(",");
 
