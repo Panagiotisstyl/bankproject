@@ -42,5 +42,5 @@ I'm about to begin my second year of university, and this project served as a va
 - The main goal was learning, not production-readiness. 
 
 ## 👤 Author
-- [Panayiotis Stylianou](https://github.com/panayiotistyl05)
+- [Panayiotis Stylianou](https://github.com/Panagiotisstyl)
 
