@@ -37,7 +37,8 @@ I'm about to begin my second year of university, and this project served as a va
 - Redis for caching
 
 ## 🧩 Limitations
+This project is not feature-complete, and some logic might not be perfect. The main goal was learning, not production-readiness.
 
-This project is not feature-complete, and some logic might not be perfect. The main goal was **learning**, not production-readiness.
 ## 👤 Author
-- [Panayiotis Stylianou](mailto:panayiotistyl05@gmail.com)
+- [Panayiotis Stylianou](https://github.com/panayiotistyl05)
+
