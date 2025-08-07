@@ -37,9 +37,9 @@ I'm about to begin my second year of university, and this project served as a va
 - Redis for caching
 
 ## 🧩 Limitations
--No frontend is implemented, this is a backend-only project
--This project is not feature-complete, and some logic might not be perfect.
--The main goal was learning, not production-readiness. 
+- No frontend is implemented, this is a backend-only project
+- This project is not feature-complete, and some logic might not be perfect.
+- The main goal was learning, not production-readiness. 
 
 ## 👤 Author
 - [Panayiotis Stylianou](https://github.com/panayiotistyl05)
