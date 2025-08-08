@@ -12,12 +12,11 @@ import org.springframework.stereotype.Component;
 public class AccountValidation {
 
 
-    public void validateUsersAccount(Account account){
+    public void validateUsersAccount(Account account) {
 
-            if(account.getTypeAccount()== TypeAccount.SINGLE && !account.getUsers().isEmpty()){
-                throw new RuntimeException("Cannot add user, account type is single");
-            }
-
+        if (account.getTypeAccount() == TypeAccount.SINGLE && !account.getUsers().isEmpty()) {
+            throw new RuntimeException("Cannot add user, account type is single");
+        }
 
 
     }
