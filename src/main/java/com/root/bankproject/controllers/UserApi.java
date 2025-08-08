@@ -1,6 +1,7 @@
 package com.root.bankproject.controllers;
 
 import com.root.bankproject.ExceptionHandler.Response;
+import com.root.bankproject.dtos.UserLoginDto;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,6 @@ public interface UserApi {
     Response<UserResponseDto> registerUser(@RequestBody UsersDto usersDto);
 
     @PostMapping("/login")
-    Response<String> userLogin(@RequestBody UsersDto usersDto);
+    Response<String> userLogin(@RequestBody UserLoginDto userLoginDto);
 
 }

@@ -1,6 +1,7 @@
 package com.root.bankproject.command;
 
 import com.root.bankproject.converters.UsersConverter;
+import com.root.bankproject.dtos.UserLoginDto;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.services.UsersService;
@@ -34,8 +35,8 @@ public class UserCommand {
         return userDto;
     }
 
-    public String userLogin(UsersDto usersDto){
-        return userValidation.validateUser(usersDto);
+    public String userLogin(UserLoginDto userLoginDto){
+        return userValidation.validateUser(userLoginDto);
     }
 
 }

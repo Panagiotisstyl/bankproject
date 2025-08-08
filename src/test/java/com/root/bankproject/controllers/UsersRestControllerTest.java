@@ -6,11 +6,14 @@ import com.root.bankproject.converters.UsersConverter;
 import com.root.bankproject.dtos.UserResponseDto;
 import com.root.bankproject.dtos.UsersDto;
 import com.root.bankproject.encryption.BcryptHashing;
+import com.root.bankproject.encryption.SimpleAES;
 import com.root.bankproject.entities.User;
 import com.root.bankproject.factories.UserFactory;
+import com.root.bankproject.repositories.UserAuditRepository;
 import com.root.bankproject.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.groups.Tuple;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +36,9 @@ public class UsersRestControllerTest extends ControllerTestHelper{
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private UserAuditRepository userAuditRepository;
+
     @Nested
     class registerUser{
         @Test
@@ -44,6 +51,10 @@ public class UsersRestControllerTest extends ControllerTestHelper{
             assertThat(returnedEmployee.getData().getUsername()).isEqualTo(userDto.getUsername());
 
             assertThat(usersRepository.findAll()).hasSize(1);
+
+            Awaitility.await().atMost(3, TimeUnit.SECONDS).untilAsserted(() ->
+                    assertThat(userAuditRepository.findAll()).hasSize(1)
+            );
         }
     }
 
@@ -111,9 +122,9 @@ public class UsersRestControllerTest extends ControllerTestHelper{
             var result=performPost("/api/v1/users/login",loginCred);
             var returnedResponse=readingValue(result,new TypeReference<Response<String>>(){});
 
-            String[] parts = returnedResponse.getData().split("\\|");
-            assertThat(parts.length==3).isTrue();
-            int userId=Integer.parseInt(parts[1]);
+            String[] parts = SimpleAES.decrypt(returnedResponse.getData()).split("\\|");
+            assertThat(parts.length==2).isTrue();
+            int userId=Integer.parseInt(parts[0]);
             assertThat(user.getId()).isEqualTo(userId);
         }
 

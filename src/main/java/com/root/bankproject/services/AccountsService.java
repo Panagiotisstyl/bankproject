@@ -38,7 +38,7 @@ public class AccountsService {
         return accountWithUser(acc);
     }
 
-    @CachePut(value="account",key="#account.getId()")
+    @CachePut(value="account",key="#result.id", condition = "#result != null")
     @CacheEvict(value = "accountList", allEntries = true)
     public Account save(Account account){
         return accountsRepository.save(account);
