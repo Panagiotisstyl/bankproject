@@ -12,5 +12,4 @@ public class Response<T> {
 
     private int statusCode;
     private T data;
-
 }

@@ -26,7 +26,7 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
 
 
-        if (url.startsWith("/api/v1/accounts/addUser")){
+       /* if (url.startsWith("/api/v1/accounts/addUser")){
             String[] parts = url.split("/");
             int accountId = Integer.parseInt(parts[5]);
             if (authorizationHeader == null || !tokenFactory.validateToken(authorizationHeader,accountId)) {
@@ -34,20 +34,52 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
                 response.getWriter().write("Unauthorized");
                 return;
             }
-        }
-        if(url.startsWith("/api/v1/accounts/deposit")){
+        }*/
 
-            if (authorizationHeader == null || !tokenFactory.validateTokenForDeposit(authorizationHeader)) {
+        if (url.startsWith("/api/v1/accounts/addUser")){
+            String[] parts = url.split("/");
+            int accountId = Integer.parseInt(parts[5]);
+            try {
+                if (authorizationHeader == null || !tokenFactory.validateToken(authorizationHeader,accountId)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Unauthorized");
+                    return;
+                }
+            } catch (Exception e) {
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Unauthorized");
+                return;
+            }
+
+        }
+
+        if(url.startsWith("/api/v1/accounts/deposit")){
+            try{
+                if (authorizationHeader == null || !tokenFactory.validateTokenForDeposit(authorizationHeader)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Unauthorized");
+                    return;
+                }
+            }catch(Exception e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Unauthorized");
                 return;
             }
         }
+
+
 
         if(url.startsWith("/api/v1/accounts/withdraw")){
             String[] parts = url.split("/");
             int accountId = Integer.parseInt(parts[5]);
-            if (authorizationHeader == null || !tokenFactory.validateToken(authorizationHeader,accountId)) {
+            try {
+                if (authorizationHeader == null || !tokenFactory.validateToken(authorizationHeader,accountId)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Unauthorized");
+                    return;
+                }
+            } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Unauthorized");
                 return;
@@ -55,6 +87,7 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
     }
 
 }

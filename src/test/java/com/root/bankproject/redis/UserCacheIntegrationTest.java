@@ -30,7 +30,7 @@ public class UserCacheIntegrationTest {
         cacheManager.getCache("accountList").clear();
         cacheManager.getCache("user").clear();
         cacheManager.getCache("accountUserList").clear();
-        // Clear any other caches you use
+
     }
 
 
